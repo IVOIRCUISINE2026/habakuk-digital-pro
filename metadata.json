@@ -1,0 +1,8 @@
+{
+  "name": "UniversHabakuk Digital Pro",
+  "description": "Découvrez des applications utiles, créatives et éducatives, et commandez une solution numérique adaptée à vos besoins.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

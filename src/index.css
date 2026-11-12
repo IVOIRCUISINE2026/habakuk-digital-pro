@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --color-primary: #168447;
+    --color-primary-dark: #0B5D32;
+    --color-secondary: #E8F5EC;
+    --color-surface: #F7FBF8;
+    --color-accent: #C9F0D5;
+    --color-border: #DCE9E0;
+    --color-text: #173528;
+    --color-muted: #64756B;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--color-text);
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  html {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+  }
+}
+
+.font-heading {
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-body {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-mono-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
