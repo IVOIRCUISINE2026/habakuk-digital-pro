@@ -401,7 +401,7 @@ export function generateFullCataloguePdfHtml(applications: ApplicationItem[]): s
     <h1 class="cover-title">${SITE_CONFIG.name}</h1>
     <p class="cover-subtitle">${SITE_CONFIG.tagline}</p>
     <div style="max-width: 500px; margin: 0 auto 30px; font-size: 13px; color: #173528;">
-      Grand Catalogue Officiel des 16 Solutions & Projets Numériques (Éducation, Gestion, IA, Jeux et Cuisine).
+      Grand Catalogue Officiel des ${applications.length} Solutions & Projets Numériques (Éducation, Gestion, IA, Jeux et Cuisine).
     </div>
     <p class="cover-meta">Conçu par Ahoret Jean Cyrille · ${SITE_CONFIG.market}</p>
     <p style="font-size: 11px; color: #64756B; margin-top: 6px;">Contact : ${SITE_CONFIG.contact.phone} | ${SITE_CONFIG.contact.email}</p>
@@ -410,7 +410,7 @@ export function generateFullCataloguePdfHtml(applications: ApplicationItem[]): s
 
   <div>
     <h2 style="font-size: 18px; color: #0B5D32; border-bottom: 2px solid #168447; padding-bottom: 6px; margin-bottom: 16px;">
-      Index des 16 Applications Référencées
+      Index des ${applications.length} Applications Référencées
     </h2>
     ${applications.map((app, i) => `
       <div class="app-page">

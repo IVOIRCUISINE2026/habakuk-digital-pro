@@ -55,7 +55,7 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
               Nos applications & projets numériques
             </h2>
             <p className="text-sm sm:text-base text-[#64756B] mt-3 leading-relaxed">
-              Explorez nos 16 solutions logicielles prêtes à être commandées ou adaptées à vos besoins en Côte d’Ivoire.
+              Explorez nos {applications.length} solutions logicielles prêtes à être commandées ou adaptées à vos besoins en Côte d’Ivoire.
               Consultez leurs images de référence et téléchargez leur fiche technique au format PDF officiel.
             </p>
           </div>

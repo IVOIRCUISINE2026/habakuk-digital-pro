@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Code, Layers } from 'lucide-react';
-import { SITE_CONFIG } from '../data/catalog';
+import { SITE_CONFIG, INITIAL_APPLICATIONS } from '../data/catalog';
 
 interface HeroProps {
   onDiscoverClick: () => void;
@@ -9,6 +9,7 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onDiscoverClick, onOrderClick, onTrackClick }) => {
+  const appCount = INITIAL_APPLICATIONS.length;
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#F7FBF8] via-white to-white pt-8 pb-16 lg:pt-14 lg:pb-24 border-b border-[#DCE9E0]">
       {/* Decorative backdrop shapes */}
@@ -36,7 +37,7 @@ export const Hero: React.FC<HeroProps> = ({ onDiscoverClick, onOrderClick, onTra
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-[#64756B] max-w-2xl leading-relaxed mb-8">
-              {SITE_CONFIG.tagline} Découvrez 16 applications conçues pour l’éducation, la gestion, les jeux et la créativité en Côte d’Ivoire, ou commandez votre propre solution sur mesure.
+              {SITE_CONFIG.tagline} Découvrez {appCount} applications conçues pour l’éducation, la gestion, les jeux et la créativité en Côte d’Ivoire, ou commandez votre propre solution sur mesure.
             </p>
 
             {/* Action buttons */}
@@ -97,10 +98,10 @@ export const Hero: React.FC<HeroProps> = ({ onDiscoverClick, onOrderClick, onTra
               <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-xl border border-[#DCE9E0] shadow-lg flex items-center justify-between">
                 <div>
                   <p className="text-xs font-semibold text-[#168447] uppercase tracking-wider">Catalogue 2026</p>
-                  <p className="text-sm font-bold text-[#173528]">16 Projets Numériques Disponibles</p>
+                  <p className="text-sm font-bold text-[#173528]">{appCount} Projets Numériques Disponibles</p>
                 </div>
                 <div className="w-10 h-10 rounded-lg bg-[#E8F5EC] text-[#168447] flex items-center justify-center font-bold">
-                  16+
+                  {appCount}+
                 </div>
               </div>
             </div>

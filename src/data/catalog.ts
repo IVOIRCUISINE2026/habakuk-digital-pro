@@ -220,17 +220,19 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
   },
   {
     id: "APP-011",
-    name: "Base de données AD PHILADELPHIE",
+    name: "Diplômes numériques",
     category: "Gestion et services",
-    description: "Projet de gestion, d'annuaire et d’organisation des données de la communauté AD Philadelphie.",
+    description: "Conception de tout type de diplômes numériques et diplômes personnalisés : diplômes scolaires et universitaires, certificats de formation, attestations d’honneur et parchemins officiels sécurisés.",
     features: [
-      "Gestion numérique des fiches",
-      "Recherche rapide multicritères",
-      "Organisation sécurisée des registres"
+      "Conception de tout type de diplômes numériques et personnalisés",
+      "Modèles officiels, académiques, professionnels et honorifiques",
+      "Intégration de sceau doré, signatures et QR code d’authenticité",
+      "Génération en masse et export PDF haute définition imprimable"
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/assets/images/hero_digital_ecosystem_1794504391774.jpg"
+    demoType: "diploma_designer",
+    image_url: "/assets/images/app_diplomes_numeriques_1794544851006.jpg"
   },
   {
     id: "APP-012",
@@ -306,6 +308,22 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     orderable: true,
     demoType: "cuisine_recipe",
     image_url: "/assets/images/app_cuisine_ivoirienne_1794505832301.jpg"
+  },
+  {
+    id: "APP-017",
+    name: "Conception de site web",
+    category: "Gestion et services",
+    description: "Conception de tout type de site web personnalisé : sites vitrines, boutiques e-commerce, portails d’entreprise, plateformes institutionnelles et applications web sur mesure.",
+    features: [
+      "Conception de tout type de site web personnalisé",
+      "Design moderne responsive (mobile, tablette, ordinateur)",
+      "Boutiques e-commerce, sites vitrines, portails & blogs",
+      "Optimisation SEO, sécurité SSL et mise en ligne complète"
+    ],
+    status: "Projet / disponibilité à confirmer",
+    orderable: true,
+    demoType: "web_designer",
+    image_url: "/assets/images/app_conception_web_1794545302905.jpg"
   }
 ];
 
@@ -455,12 +473,12 @@ export const INITIAL_ORDERS = [
       city: "Yamoussoukro"
     },
     application_id: "APP-011",
-    application_name: "Base de données AD PHILADELPHIE",
+    application_name: "Diplômes numériques",
     order_type: "Personnalisation" as const,
     platform: ["Ordinateur", "Site web"],
     budget: "Sur devis",
     deadline: "1 mois",
-    details: "Déploiement pour l'annuaire des fidèles et le suivi pastoral avec impression de fiches et statistiques de présence.",
+    details: "Conception de diplômes numériques et attestations personnalisées avec logo, signatures officielles et QR code de vérification pour notre cérémonie annuelle.",
     status: "quoted" as OrderStatus,
     admin_message: "Le devis détaillé et le plan d'installation vous ont été envoyés par email et WhatsApp. En attente de votre retour.",
     internal_notes: "Devis N°DEV-2026-085 envoyé.",

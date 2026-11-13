@@ -25,7 +25,7 @@ export interface ApplicationItem {
   features: string[];
   status: string;
   orderable: boolean;
-  demoType?: 'code_generator' | 'calendar_designer' | 'quiz_chretien' | 'prompt_generator' | 'cv_builder' | 'cuisine_recipe' | 'interactive_feature';
+  demoType?: 'code_generator' | 'calendar_designer' | 'diploma_designer' | 'web_designer' | 'quiz_chretien' | 'prompt_generator' | 'cv_builder' | 'cuisine_recipe' | 'interactive_feature';
   image_url?: string;
   pdf_catalog_url?: string;
 }

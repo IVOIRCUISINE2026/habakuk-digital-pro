@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Copy, Sparkles, Calendar, ArrowRight, FileDown } from 'lucide-react';
+import { X, Check, Copy, Sparkles, Calendar, Award, Globe, ArrowRight, FileDown } from 'lucide-react';
 import { ApplicationItem } from '../types';
 import { downloadApplicationPdf } from '../utils/pdfGenerator';
 
@@ -15,6 +15,9 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
   // State for Calendrier numérique demo
   const [calendarType, setCalendarType] = useState<'entreprise' | 'scolaire' | 'eglise' | 'personnel'>('entreprise');
   const [calendarAccent, setCalendarAccent] = useState<'emerald' | 'amber' | 'slate'>('emerald');
+  const [diplomaStyle, setDiplomaStyle] = useState<'formation' | 'honneur' | 'academique'>('formation');
+  const [diplomaRecipient, setDiplomaRecipient] = useState<string>('Konan Ahoua Jean');
+  const [webSiteType, setWebSiteType] = useState<'vitrine' | 'ecommerce' | 'portail'>('vitrine');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // State for Questions pour un Chrétien demo
@@ -415,8 +418,156 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
               </div>
             ) : null}
 
+            {/* 6. Diplômes numériques (APP-011) */}
+            {app.id === 'APP-011' ? (
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h3 className="font-heading font-bold text-sm text-[#173528] flex items-center gap-1.5">
+                      <Award className="w-4 h-4 text-[#168447]" />
+                      <span>Aperçu studio de diplômes personnalisés</span>
+                    </h3>
+                    <p className="text-xs text-[#64756B]">Testez le rendu de votre diplôme numérique ou parchemin imprimable</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { id: 'formation', label: 'Certificat de formation' },
+                    { id: 'honneur', label: 'Diplôme d’honneur' },
+                    { id: 'academique', label: 'Diplôme académique' }
+                  ] as const).map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setDiplomaStyle(item.id)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+                        diplomaStyle === item.id
+                          ? 'bg-[#168447] text-white'
+                          : 'bg-white text-[#64756B] border border-[#DCE9E0] hover:text-[#173528]'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-[#173528] mb-1">
+                    Nom du bénéficiaire (aperçu en direct)
+                  </label>
+                  <input
+                    type="text"
+                    value={diplomaRecipient}
+                    onChange={(e) => setDiplomaRecipient(e.target.value)}
+                    placeholder="Ex : Konan Ahoua Jean"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-[#DCE9E0] bg-white text-[#173528] focus:outline-none focus:border-[#168447]"
+                  />
+                </div>
+
+                <div className="rounded-xl border-2 border-[#0B5D32]/30 bg-white p-4 sm:p-5 shadow-2xs text-center space-y-2.5 relative overflow-hidden">
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-[#168447]">
+                    Univers Habakuk Digital Pro · Authentifié QR
+                  </div>
+                  <h4 className="font-heading text-base font-extrabold text-[#173528]">
+                    {diplomaStyle === 'formation'
+                      ? 'CERTIFICAT DE RÉUSSITE'
+                      : diplomaStyle === 'honneur'
+                        ? 'DIPLÔME D’HONNEUR & MÉRITE'
+                        : 'DIPLÔME OFFICIEL DE FIN D’ÉTUDES'}
+                  </h4>
+                  <p className="text-[11px] text-[#64756B]">Décerné avec distinction à</p>
+                  <p className="font-heading text-lg font-bold text-[#0B5D32] border-b border-dashed border-[#DCE9E0] pb-1.5 inline-block px-4">
+                    {diplomaRecipient.trim() || 'Nom du Lauréat'}
+                  </p>
+                  <div className="flex items-center justify-between pt-2 text-[10px] text-[#64756B]">
+                    <span>Sceau officiel & Signature</span>
+                    <span className="font-mono-code font-semibold text-[#0B5D32] bg-[#E8F5EC] px-2 py-0.5 rounded">
+                      ID #DIP-2026-CI
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-[#64756B] italic">
+                  * Conception complète sur mesure : formats PDF sécurisé avec QR code de vérification, version web et haute résolution d’impression.
+                </p>
+              </div>
+            ) : null}
+
+            {/* 7. Conception de site web (APP-017) */}
+            {app.id === 'APP-017' ? (
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-heading font-bold text-sm text-[#173528] flex items-center gap-1.5">
+                    <Globe className="w-4 h-4 text-[#168447]" />
+                    <span>Configurateur de site web personnalisé</span>
+                  </h3>
+                  <p className="text-xs text-[#64756B]">Explorez les architectures web adaptées à votre activité</p>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { id: 'vitrine', label: 'Site Vitrine Pro' },
+                    { id: 'ecommerce', label: 'Boutique E-commerce' },
+                    { id: 'portail', label: 'Portail & Application Web' }
+                  ] as const).map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setWebSiteType(item.id)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+                        webSiteType === item.id
+                          ? 'bg-[#168447] text-white'
+                          : 'bg-white text-[#64756B] border border-[#DCE9E0] hover:text-[#173528]'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="rounded-xl bg-white border border-[#DCE9E0] overflow-hidden shadow-2xs">
+                  <div className="px-3 py-2 bg-[#F7FBF8] border-b border-[#DCE9E0] flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-rose-400" />
+                      <span className="w-2 h-2 rounded-full bg-amber-400" />
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    </div>
+                    <span className="text-[10px] font-mono-code text-[#64756B]">
+                      https://votre-projet.ci
+                    </span>
+                  </div>
+                  <div className="p-4 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[#0B5D32]">
+                        {webSiteType === 'vitrine'
+                          ? 'Présentation d’entreprise & Prise de rendez-vous'
+                          : webSiteType === 'ecommerce'
+                            ? 'Catalogue produits, Panier & Paiement Mobile Money'
+                            : 'Espace membre, Tableau de bord & Base de données'}
+                      </span>
+                      <span className="text-[10px] font-semibold bg-[#E8F5EC] text-[#0B5D32] px-2 py-0.5 rounded">
+                        100% Responsive
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#64756B] leading-relaxed">
+                      {webSiteType === 'vitrine'
+                        ? 'Idéal pour entreprises, cabinets, écoles, ONG ou marques personnelles souhaitant valoriser leur image en ligne avec formulaire de contact et lien WhatsApp.'
+                        : webSiteType === 'ecommerce'
+                          ? 'Vendez vos produits en ligne 24h/24 avec gestion du catalogue, suivi des commandes et intégration fluide adaptée au marché ivoirien.'
+                          : 'Solution web sur mesure avec authentification sécurisée, gestion des utilisateurs et automatisation de vos processus métier.'}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-[#64756B] italic">
+                  * Chaque site web personnalisé inclut l’adaptation mobile, le référencement de base et l’accompagnement au déploiement.
+                </p>
+              </div>
+            ) : null}
+
             {/* Default for other apps */}
-            {!['APP-012', 'APP-013', 'APP-015', 'APP-006', 'APP-002', 'APP-010', 'APP-016'].includes(app.id) && (
+            {!['APP-011', 'APP-012', 'APP-013', 'APP-015', 'APP-006', 'APP-002', 'APP-010', 'APP-016', 'APP-017'].includes(app.id) && (
               <div className="space-y-3">
                 <h4 className="font-heading font-semibold text-xs text-[#173528]">Fonctionnalités au cahier des charges :</h4>
                 <ul className="space-y-1.5">
