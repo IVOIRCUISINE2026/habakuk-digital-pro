@@ -10,11 +10,13 @@ export function generateApplicationPdfHtml(app: ApplicationItem): string {
     month: 'long',
     year: 'numeric'
   });
+  const baseHref = typeof window !== 'undefined' ? `${window.location.origin}/` : '/';
 
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <base href="${baseHref}">
   <title>Catalogue Officiel - ${app.id} ${app.name} - ${SITE_CONFIG.name}</title>
   <style>
     @page {

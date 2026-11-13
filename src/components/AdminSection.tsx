@@ -4,24 +4,17 @@ import {
   Lock,
   LogOut,
   Search,
-  Filter,
   Download,
-  Eye,
   CheckCircle2,
-  Clock,
   AlertCircle,
   MessageSquare,
-  FileText,
-  UserCheck,
-  Layers,
   RefreshCw,
   X,
-  Send,
-  Plus
+  Send
 } from 'lucide-react';
 import { Order, OrderStatus, User, ApplicationItem } from '../types';
 import { api } from '../services/api';
-import { STATUS_DEFINITIONS, SITE_CONFIG } from '../data/catalog';
+import { STATUS_DEFINITIONS } from '../data/catalog';
 
 interface AdminSectionProps {
   applications: ApplicationItem[];
@@ -45,13 +38,12 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
 
   // Orders state
   const [orders, setOrders] = useState<Order[]>([]);
-  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterApp, setFilterApp] = useState<string>('all');
+  const [filterApp] = useState<string>('all');
   const [filterType, setFilterType] = useState<string>('all');
 
   // Edit order modal form state
@@ -63,14 +55,11 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
   const [updateSuccessMsg, setUpdateSuccessMsg] = useState(false);
 
   const fetchOrders = async () => {
-    setIsLoadingOrders(true);
     try {
       const data = await api.getAdminOrders();
       setOrders(data);
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoadingOrders(false);
     }
   };
 

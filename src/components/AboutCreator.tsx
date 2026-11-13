@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, Mail, Phone, MapPin, CheckCircle, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, CheckCircle } from 'lucide-react';
 import { SITE_CONFIG } from '../data/catalog';
 
 interface AboutCreatorProps {
@@ -17,9 +17,9 @@ export const AboutCreator: React.FC<AboutCreatorProps> = ({ onContactClick }) =>
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md rounded-2xl overflow-hidden border border-[#DCE9E0] shadow-xl bg-[#F7FBF8]">
               <img
-                src="/src/assets/images/founder_jean_cyrille_1794504393029.jpg"
+                src="/assets/aistudio/263118613_1791987860660303_f8e6c770.jpg"
                 alt="Ahoret Jean Cyrille - Concepteur et Fondateur de Univers Habakuk Digital Pro"
-                className="w-full h-auto object-cover aspect-square"
+                className="w-full h-auto object-cover object-top aspect-[4/5]"
                 referrerPolicy="no-referrer"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';

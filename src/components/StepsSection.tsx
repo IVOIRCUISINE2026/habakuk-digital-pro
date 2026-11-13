@@ -1,6 +1,6 @@
 import React from 'react';
-import { ArrowRight, MessageSquare, Check, Phone, ShieldCheck } from 'lucide-react';
-import { ORDER_STEPS, SITE_CONFIG } from '../data/catalog';
+import { ArrowRight, MessageSquare, Check } from 'lucide-react';
+import { ORDER_STEPS } from '../data/catalog';
 
 interface StepsSectionProps {
   onOrderClick: () => void;

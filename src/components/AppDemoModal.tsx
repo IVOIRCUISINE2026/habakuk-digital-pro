@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Copy, Sparkles, RefreshCw, ArrowRight, Play, BookOpen, Utensils, Award, FileText, FileDown } from 'lucide-react';
+import { X, Check, Copy, Sparkles, RefreshCw, ArrowRight, FileDown } from 'lucide-react';
 import { ApplicationItem } from '../types';
 import { downloadApplicationPdf } from '../utils/pdfGenerator';
 

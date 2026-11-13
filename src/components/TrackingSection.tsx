@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Package, Clock, CheckCircle, MessageSquare, AlertCircle, ArrowRight, ShieldCheck, ChevronRight } from 'lucide-react';
+import { Search, MessageSquare, AlertCircle } from 'lucide-react';
 import { Order, OrderStatus } from '../types';
 import { api } from '../services/api';
-import { STATUS_DEFINITIONS, SITE_CONFIG } from '../data/catalog';
+import { STATUS_DEFINITIONS } from '../data/catalog';
 
 interface TrackingSectionProps {
   initialReference?: string;

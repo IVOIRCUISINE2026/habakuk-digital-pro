@@ -86,7 +86,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "interactive_feature",
-    image_url: "/src/assets/images/app_ivoir_educ_1794505831655.jpg"
+    image_url: "/assets/images/app_ivoir_educ_1794505831655.jpg"
   },
   {
     id: "APP-002",
@@ -101,7 +101,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "prompt_generator",
-    image_url: "/src/assets/images/digital_showcase_tiles_1794504392037.jpg"
+    image_url: "/assets/images/digital_showcase_tiles_1794504392037.jpg"
   },
   {
     id: "APP-003",
@@ -115,7 +115,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/src/assets/images/digital_showcase_tiles_1794504392037.jpg"
+    image_url: "/assets/images/digital_showcase_tiles_1794504392037.jpg"
   },
   {
     id: "APP-004",
@@ -129,7 +129,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/src/assets/images/hero_digital_ecosystem_1794504391774.jpg"
+    image_url: "/assets/images/hero_digital_ecosystem_1794504391774.jpg"
   },
   {
     id: "APP-005",
@@ -143,7 +143,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/src/assets/images/hero_digital_ecosystem_1794504391774.jpg"
+    image_url: "/assets/images/hero_digital_ecosystem_1794504391774.jpg"
   },
   {
     id: "APP-006",
@@ -158,7 +158,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "prompt_generator",
-    image_url: "/src/assets/images/digital_showcase_tiles_1794504392037.jpg"
+    image_url: "/assets/images/digital_showcase_tiles_1794504392037.jpg"
   },
   {
     id: "APP-007",
@@ -172,7 +172,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/src/assets/images/hero_digital_ecosystem_1794504391774.jpg"
+    image_url: "/assets/images/hero_digital_ecosystem_1794504391774.jpg"
   },
   {
     id: "APP-008",
@@ -186,7 +186,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/src/assets/images/hero_digital_ecosystem_1794504391774.jpg"
+    image_url: "/assets/images/hero_digital_ecosystem_1794504391774.jpg"
   },
   {
     id: "APP-009",
@@ -201,7 +201,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "code_generator",
-    image_url: "/src/assets/images/app_carte_event_qr_1794505832685.jpg"
+    image_url: "/assets/images/app_carte_event_qr_1794505832685.jpg"
   },
   {
     id: "APP-010",
@@ -216,7 +216,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "cv_builder",
-    image_url: "/src/assets/images/digital_showcase_tiles_1794504392037.jpg"
+    image_url: "/assets/images/digital_showcase_tiles_1794504392037.jpg"
   },
   {
     id: "APP-011",
@@ -230,7 +230,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/src/assets/images/hero_digital_ecosystem_1794504391774.jpg"
+    image_url: "/assets/images/hero_digital_ecosystem_1794504391774.jpg"
   },
   {
     id: "APP-012",
@@ -245,7 +245,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "code_generator",
-    image_url: "/src/assets/images/app_carte_event_qr_1794505832685.jpg"
+    image_url: "/assets/images/app_carte_event_qr_1794505832685.jpg"
   },
   {
     id: "APP-013",
@@ -260,7 +260,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "quiz_chretien",
-    image_url: "/src/assets/images/app_quiz_chretien_1794505833585.jpg"
+    image_url: "/assets/images/app_quiz_chretien_1794505833585.jpg"
   },
   {
     id: "APP-014",
@@ -274,7 +274,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/src/assets/images/app_quiz_chretien_1794505833585.jpg"
+    image_url: "/assets/images/app_quiz_chretien_1794505833585.jpg"
   },
   {
     id: "APP-015",
@@ -289,7 +289,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "quiz_chretien",
-    image_url: "/src/assets/images/app_quiz_chretien_1794505833585.jpg"
+    image_url: "/assets/images/app_quiz_chretien_1794505833585.jpg"
   },
   {
     id: "APP-016",
@@ -304,7 +304,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "cuisine_recipe",
-    image_url: "/src/assets/images/app_cuisine_ivoirienne_1794505832301.jpg"
+    image_url: "/assets/images/app_cuisine_ivoirienne_1794505832301.jpg"
   }
 ];
 

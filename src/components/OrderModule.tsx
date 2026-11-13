@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Check, Copy, AlertCircle, ArrowRight, MessageSquare, Send, Upload, FileText, Smartphone, Laptop, Globe, Monitor } from 'lucide-react';
+import { Check, Copy, AlertCircle, ArrowRight, MessageSquare, Send, Upload, FileText, Smartphone, Laptop, Globe } from 'lucide-react';
 import { ApplicationItem, Order } from '../types';
 import { api } from '../services/api';
-import { SITE_CONFIG } from '../data/catalog';
 
 interface OrderModuleProps {
   applications: ApplicationItem[];

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowUp, Mail, Phone, MapPin, MessageSquare, Shield, FileText, CheckCircle } from 'lucide-react';
+import { ArrowUp, Mail, Phone, MapPin, MessageSquare, Shield } from 'lucide-react';
 import { SITE_CONFIG } from '../data/catalog';
 
 interface FooterProps {

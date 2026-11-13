@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Eye, ShoppingCart, Check, FileDown, Download, Sparkles } from 'lucide-react';
+import { Search, Eye, ShoppingCart, Check, FileDown, Download } from 'lucide-react';
 import { ApplicationItem } from '../types';
 import { downloadApplicationPdf, downloadFullCataloguePdf } from '../utils/pdfGenerator';
 

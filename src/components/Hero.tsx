@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Laptop, PhoneCall, Code, Layers } from 'lucide-react';
+import { ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Code, Layers } from 'lucide-react';
 import { SITE_CONFIG } from '../data/catalog';
 
 interface HeroProps {
@@ -79,7 +79,7 @@ export const Hero: React.FC<HeroProps> = ({ onDiscoverClick, onOrderClick, onTra
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto rounded-2xl overflow-hidden shadow-2xl border border-[#DCE9E0] bg-white group">
               <img
-                src="/src/assets/images/hero_digital_ecosystem_1794504391774.jpg"
+                src="/assets/images/hero_digital_ecosystem_1794504391774.jpg"
                 alt="Univers Habakuk Digital Pro - Écosystème Numérique en Côte d’Ivoire"
                 className="w-full h-80 sm:h-96 object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
