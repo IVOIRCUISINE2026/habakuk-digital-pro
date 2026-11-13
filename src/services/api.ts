@@ -37,15 +37,13 @@ function getLocalApplications(): ApplicationItem[] {
       return INITIAL_APPLICATIONS;
     }
     const parsed: ApplicationItem[] = JSON.parse(raw);
-    // Ensure all applications have the latest image_url
-    return parsed.map(app => {
-      const initial = INITIAL_APPLICATIONS.find(a => a.id === app.id);
-      return {
-        ...app,
-        image_url: initial?.image_url || app.image_url
-      };
+    const merged = INITIAL_APPLICATIONS.map(initial => {
+      const stored = parsed.find(a => a.id === initial.id && a.name === initial.name);
+      return stored ? { ...initial, status: stored.status || initial.status } : initial;
     });
-  } catch (e) {
+    localStorage.setItem(STORAGE_KEYS.APPLICATIONS, JSON.stringify(merged));
+    return merged;
+  } catch {
     return INITIAL_APPLICATIONS;
   }
 }

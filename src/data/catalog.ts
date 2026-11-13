@@ -234,18 +234,19 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
   },
   {
     id: "APP-012",
-    name: "Codes Générale",
+    name: "Calendrier numérique",
     category: "Gestion et services",
-    description: "Projet de génération et d'authentification de codes uniques selon le format officiel IVOIR + 4 chiffres + 1 lettre majuscule.",
+    description: "Conception de tout type de calendrier personnalisé : calendriers d’entreprise, scolaires, liturgiques, événementiels, muraux ou interactifs adaptés à votre identité.",
     features: [
-      "Génération algorithmique de codes",
-      "Format strict IVOIR + 4 chiffres + Lettre",
-      "Contrôle anti-doublons immédiat"
+      "Conception de tout type de calendrier personnalisé",
+      "Modèles d’entreprise, scolaires, religieux et familiaux",
+      "Intégration de logos, photos, jours fériés et temps forts",
+      "Export haute définition et version numérique interactive"
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    demoType: "code_generator",
-    image_url: "/assets/images/app_carte_event_qr_1794505832685.jpg"
+    demoType: "calendar_designer",
+    image_url: "/assets/images/app_calendrier_numerique_1794543703168.jpg"
   },
   {
     id: "APP-013",

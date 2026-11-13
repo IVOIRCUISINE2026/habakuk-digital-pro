@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Check, Copy, Sparkles, RefreshCw, ArrowRight, FileDown } from 'lucide-react';
+import { X, Check, Copy, Sparkles, Calendar, ArrowRight, FileDown } from 'lucide-react';
 import { ApplicationItem } from '../types';
 import { downloadApplicationPdf } from '../utils/pdfGenerator';
 
@@ -12,12 +12,9 @@ interface AppDemoModalProps {
 export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrder }) => {
   if (!app) return null;
 
-  // State for Codes Générale demo
-  const [generatedCodes, setGeneratedCodes] = useState<string[]>([
-    "IVOIR4812K",
-    "IVOIR9204M",
-    "IVOIR3357Z"
-  ]);
+  // State for Calendrier numérique demo
+  const [calendarType, setCalendarType] = useState<'entreprise' | 'scolaire' | 'eglise' | 'personnel'>('entreprise');
+  const [calendarAccent, setCalendarAccent] = useState<'emerald' | 'amber' | 'slate'>('emerald');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // State for Questions pour un Chrétien demo
@@ -56,13 +53,27 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
     }
   ];
 
-  // Helper to generate a new valid IVOIR code
-  const handleGenerateCode = () => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const fourDigits = Math.floor(1000 + Math.random() * 9000);
-    const randomLetter = letters[Math.floor(Math.random() * letters.length)];
-    const code = `IVOIR${fourDigits}${randomLetter}`;
-    setGeneratedCodes(prev => [code, ...prev.slice(0, 4)]);
+  const calendarPresets = {
+    entreprise: {
+      title: "Calendrier Corporate 2026",
+      subtitle: "Logo société · Réunions trimestrielles · Jours fériés CI",
+      highlights: [4, 15, 22, 28]
+    },
+    scolaire: {
+      title: "Calendrier Académique 2026-2027",
+      subtitle: "Rentrées · Examens blancs · Congés scolaires",
+      highlights: [2, 11, 19, 26]
+    },
+    eglise: {
+      title: "Calendrier Cultuel & Événements",
+      subtitle: "Séminaires · Veillées · Temps forts communautaires",
+      highlights: [7, 14, 21, 29]
+    },
+    personnel: {
+      title: "Calendrier Photo & Famille",
+      subtitle: "Anniversaires · Souvenirs illustrés · Citations",
+      highlights: [5, 12, 18, 25]
+    }
   };
 
   const handleCopyCode = (code: string) => {
@@ -150,45 +161,109 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
           {/* Interactive simulator depending on app */}
           <div className="border border-[#DCE9E0] rounded-xl p-5 bg-[#F7FBF8]">
             
-            {/* 1. Codes Générale (APP-012) */}
+            {/* 1. Calendrier numérique (APP-012) */}
             {app.id === 'APP-012' ? (
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <h3 className="font-heading font-bold text-sm text-[#173528]">Générateur d'identifiants uniques</h3>
-                    <p className="text-xs text-[#64756B]">Format homologué : IVOIR + 4 chiffres + 1 lettre majuscule</p>
+                    <h3 className="font-heading font-bold text-sm text-[#173528] flex items-center gap-1.5">
+                      <Calendar className="w-4 h-4 text-[#168447]" />
+                      <span>Configurateur de calendrier personnalisé</span>
+                    </h3>
+                    <p className="text-xs text-[#64756B]">Choisissez un style pour prévisualiser votre maquette sur mesure</p>
                   </div>
-                  <button
-                    onClick={handleGenerateCode}
-                    className="px-3.5 py-2 text-xs font-semibold text-white bg-[#168447] hover:bg-[#0B5D32] rounded-lg transition-colors flex items-center gap-1.5"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Générer un code</span>
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    {(['emerald', 'amber', 'slate'] as const).map((accent) => (
+                      <button
+                        key={accent}
+                        type="button"
+                        onClick={() => setCalendarAccent(accent)}
+                        className={`w-5 h-5 rounded-full border-2 transition-transform cursor-pointer ${
+                          accent === 'emerald'
+                            ? 'bg-[#168447]'
+                            : accent === 'amber'
+                              ? 'bg-amber-600'
+                              : 'bg-slate-800'
+                        } ${calendarAccent === accent ? 'border-[#173528] scale-110' : 'border-white'}`}
+                        title="Changer le thème couleur"
+                      />
+                    ))}
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
-                  {generatedCodes.map((code, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-between p-3 rounded-lg bg-white border border-[#DCE9E0] font-mono-code text-sm font-bold text-[#0B5D32]"
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { id: 'entreprise', label: 'Entreprise' },
+                    { id: 'scolaire', label: 'Scolaire' },
+                    { id: 'eglise', label: 'Église & Culte' },
+                    { id: 'personnel', label: 'Photo & Famille' }
+                  ] as const).map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setCalendarType(item.id)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+                        calendarType === item.id
+                          ? 'bg-[#168447] text-white'
+                          : 'bg-white text-[#64756B] border border-[#DCE9E0] hover:text-[#173528]'
+                      }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-[#168447]" />
-                        <span>{code}</span>
-                      </div>
-                      <button
-                        onClick={() => handleCopyCode(code)}
-                        className="p-1.5 text-xs text-[#64756B] hover:text-[#168447] rounded hover:bg-[#E8F5EC] transition-colors"
-                        title="Copier le code"
-                      >
-                        {copiedCode === code ? <Check className="w-4 h-4 text-[#168447]" /> : <Copy className="w-4 h-4" />}
-                      </button>
-                    </div>
+                      {item.label}
+                    </button>
                   ))}
                 </div>
+
+                <div className="rounded-xl bg-white border border-[#DCE9E0] overflow-hidden shadow-2xs">
+                  <div
+                    className={`px-4 py-2.5 text-white flex items-center justify-between ${
+                      calendarAccent === 'emerald'
+                        ? 'bg-[#168447]'
+                        : calendarAccent === 'amber'
+                          ? 'bg-amber-600'
+                          : 'bg-slate-800'
+                    }`}
+                  >
+                    <div>
+                      <p className="text-xs font-bold">{calendarPresets[calendarType].title}</p>
+                      <p className="text-[10px] opacity-90">{calendarPresets[calendarType].subtitle}</p>
+                    </div>
+                    <span className="text-[10px] font-mono-code font-semibold bg-white/20 px-2 py-0.5 rounded">
+                      NOV. 2026
+                    </span>
+                  </div>
+
+                  <div className="p-3">
+                    <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[#64756B] mb-1.5">
+                      {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, idx) => (
+                        <span key={idx}>{d}</span>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-7 gap-1 text-center text-[11px]">
+                      {Array.from({ length: 30 }, (_, i) => i + 1).map((day) => {
+                        const isHighlighted = calendarPresets[calendarType].highlights.includes(day);
+                        return (
+                          <div
+                            key={day}
+                            className={`py-1 rounded font-medium ${
+                              isHighlighted
+                                ? calendarAccent === 'emerald'
+                                  ? 'bg-[#E8F5EC] text-[#0B5D32] font-bold border border-[#C9F0D5]'
+                                  : calendarAccent === 'amber'
+                                    ? 'bg-amber-50 text-amber-900 font-bold border border-amber-200'
+                                    : 'bg-slate-100 text-slate-900 font-bold border border-slate-300'
+                                : 'text-[#173528]'
+                            }`}
+                          >
+                            {day}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
                 <p className="text-[11px] text-[#64756B] italic">
-                  * Algorithme certifié sans doublon, prêt pour cartes de membres, tickets d’événements et attestations.
+                  * Conception complète sur mesure : formats mural, chevalet, poche, PDF haute définition ou calendrier web interactif.
                 </p>
               </div>
             ) : null}
