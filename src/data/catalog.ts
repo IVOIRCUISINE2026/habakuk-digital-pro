@@ -86,7 +86,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "interactive_feature",
-    image_url: "/assets/images/app_ivoir_educ_1794505831655.jpg"
+    image_url: "/assets/aistudio/file_00000000ebf881f4bce4d3aab20d6184_2678e92f.png"
   },
   {
     id: "APP-002",
@@ -101,7 +101,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "prompt_generator",
-    image_url: "/assets/images/digital_showcase_tiles_1794504392037.jpg"
+    image_url: "/assets/aistudio/152020491_1791988376466157_3459d23f.jpg"
   },
   {
     id: "APP-003",
@@ -115,7 +115,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/assets/images/digital_showcase_tiles_1794504392037.jpg"
+    image_url: "/assets/aistudio/file_00000000883c8210abbab37390ae9160_7a6f1604.png"
   },
   {
     id: "APP-004",
@@ -129,7 +129,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     ],
     status: "Projet / disponibilité à confirmer",
     orderable: true,
-    image_url: "/assets/images/hero_digital_ecosystem_1794504391774.jpg"
+    image_url: "/assets/aistudio/1792576666163_fd34c23a.jpg"
   },
   {
     id: "APP-005",
@@ -307,7 +307,7 @@ export const INITIAL_APPLICATIONS: ApplicationItem[] = [
     status: "Projet / disponibilité à confirmer",
     orderable: true,
     demoType: "cuisine_recipe",
-    image_url: "/assets/images/app_cuisine_ivoirienne_1794505832301.jpg"
+    image_url: "/assets/aistudio/file_000000008dfc8246a4c54cb5af6e525f_ae275edd.png"
   },
   {
     id: "APP-017",
