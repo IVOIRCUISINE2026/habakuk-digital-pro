@@ -96,8 +96,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col bg-white text-[#173528] font-body selection:bg-[#C9F0D5] selection:text-[#0B5D32]">
-      {/* Sticky Top Header */}
+    <div className="min-h-screen w-full max-w-full overflow-x-clip flex flex-col bg-white text-[#173528] font-body selection:bg-[#C9F0D5] selection:text-[#0B5D32]">
+      {/* Fixed Top Header */}
       <Header
         currentTab={currentTab}
         onNavigate={handleNavigate}
@@ -105,7 +105,7 @@ export default function App() {
       />
 
       {/* Main View Area */}
-      <main className="flex-1">
+      <main className="flex-1 pt-16 sm:pt-18">
         
         {/* TAB 1: ACCUEIL */}
         {currentTab === 'accueil' && (

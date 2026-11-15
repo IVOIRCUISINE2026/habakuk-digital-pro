@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, isAdminL
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#DCE9E0] transition-colors w-full overflow-hidden">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#DCE9E0] shadow-xs transition-colors w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3 sm:gap-6 h-16 sm:h-18">
           
@@ -105,7 +105,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, isAdminL
 
       {/* Mobile drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-[#DCE9E0] bg-[#F7FBF8] px-4 pt-3 pb-6 animate-in slide-in-from-top-2 duration-150">
+        <div className="lg:hidden border-b border-[#DCE9E0] bg-[#F7FBF8] px-4 pt-3 pb-6 max-h-[calc(100vh-4rem)] overflow-y-auto animate-in slide-in-from-top-2 duration-150">
           <div className="flex flex-col gap-2">
             {navLinks.map((link) => (
               <button
