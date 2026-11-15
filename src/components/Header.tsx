@@ -16,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, isAdminL
     { label: "Nos applications", id: "applications" },
     { label: "Nos services", id: "services" },
     { label: "Suivi de commande", id: "suivi" },
+    { label: "Statistiques", id: "statistiques" },
     { label: "Administration", id: "administration" },
   ];
 
@@ -50,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate, isAdminL
           </div>
 
           {/* Zone 2: Navigation Links for Desktop */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-[#64756B] shrink-0">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-6 text-sm font-medium text-[#64756B] shrink-0">
             {navLinks.map((link) => {
               const isActive = currentTab === link.id;
               const isAdmin = link.id === "administration";

@@ -1,14 +1,31 @@
-import { Order, OrderStatus, ApplicationItem, User } from '../types';
+import { Order, OrderStatus, ApplicationItem, User, ChatExchangeItem, VisitorStatsSummary } from '../types';
 import { INITIAL_APPLICATIONS, INITIAL_ORDERS } from '../data/catalog';
 
 const STORAGE_KEYS = {
-  ORDERS: 'univershabakuk_orders_v1',
+  ORDERS: 'univershabakuk_orders_v2',
   APPLICATIONS: 'univershabakuk_apps_v1',
-  AUTH_USER: 'univershabakuk_admin_user_v1'
+  AUTH_USER: 'univershabakuk_admin_user_v1',
+  CHAT_LOGS: 'univershabakuk_chat_logs_v1',
+  VISITOR_ID: 'univershabakuk_visitor_id_v1',
+  STATS_CACHE: 'univershabakuk_stats_cache_v1'
 };
+
+function getOrCreateVisitorId(): string {
+  try {
+    let id = localStorage.getItem(STORAGE_KEYS.VISITOR_ID);
+    if (!id) {
+      id = 'vis-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 8);
+      localStorage.setItem(STORAGE_KEYS.VISITOR_ID, id);
+    }
+    return id;
+  } catch {
+    return 'vis-anon';
+  }
+}
 
 function getLocalOrders(): Order[] {
   try {
+    localStorage.removeItem('univershabakuk_orders_v1');
     const raw = localStorage.getItem(STORAGE_KEYS.ORDERS);
     if (!raw) {
       localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(INITIAL_ORDERS));
@@ -286,10 +303,15 @@ export const api = {
     return { success: true, order: updatedOrder };
   },
 
-  // 6. Reset or seed data
-  resetOrdersToDefault(): Order[] {
-    saveLocalOrders(INITIAL_ORDERS);
-    return INITIAL_ORDERS;
+  // 6. Clear all orders
+  async resetOrdersToDefault(): Promise<Order[]> {
+    saveLocalOrders([]);
+    try {
+      await fetch('/api/admin/orders', { method: 'DELETE' });
+    } catch {
+      // Ignore network error; local orders cleared
+    }
+    return [];
   },
 
   // 7. Applications
@@ -302,5 +324,176 @@ export const api = {
     const updated = apps.map(a => a.id === appId ? { ...a, status: newStatus } : a);
     saveLocalApplications(updated);
     return updated;
+  },
+
+  resetApplicationsToDefault(): ApplicationItem[] {
+    saveLocalApplications(INITIAL_APPLICATIONS);
+    return INITIAL_APPLICATIONS;
+  },
+
+  // 8. AI Chatbot Assistant
+  async sendChatMessage(
+    message: string,
+    history: Array<{ role: 'user' | 'model'; text: string }>,
+    sessionId?: string
+  ): Promise<{ success: boolean; reply?: string; exchange?: ChatExchangeItem; error?: string }> {
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history, sessionId })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        return {
+          success: false,
+          error: data.error || 'Une erreur est survenue lors de la réponse.'
+        };
+      }
+      if (data.exchange) {
+        try {
+          const existingRaw = localStorage.getItem(STORAGE_KEYS.CHAT_LOGS);
+          const existing: ChatExchangeItem[] = existingRaw ? JSON.parse(existingRaw) : [];
+          const next = [data.exchange, ...existing.filter(item => item.id !== data.exchange.id)].slice(0, 500);
+          localStorage.setItem(STORAGE_KEYS.CHAT_LOGS, JSON.stringify(next));
+        } catch {
+          // Ignore storage quota errors
+        }
+      }
+      return { success: true, reply: data.reply, exchange: data.exchange };
+    } catch {
+      return {
+        success: false,
+        error: 'Connexion au serveur impossible. Vous pouvez nous joindre au +225 07 04 00 23 87.'
+      };
+    }
+  },
+
+  // 9. Admin Chatbot Traceability History
+  async getAdminChats(): Promise<ChatExchangeItem[]> {
+    let localChats: ChatExchangeItem[] = [];
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.CHAT_LOGS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) localChats = parsed;
+      }
+    } catch {
+      localChats = [];
+    }
+
+    try {
+      const res = await fetch('/api/admin/chats');
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json.chats)) {
+          const map = new Map<string, ChatExchangeItem>();
+          for (const item of [...json.chats, ...localChats]) {
+            if (item && item.id && !map.has(item.id)) {
+              map.set(item.id, item);
+            }
+          }
+          const merged = Array.from(map.values()).sort(
+            (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+          try {
+            localStorage.setItem(STORAGE_KEYS.CHAT_LOGS, JSON.stringify(merged.slice(0, 500)));
+          } catch {
+            // Ignore
+          }
+          return merged;
+        }
+      }
+    } catch {
+      // Fallback to local
+    }
+
+    return localChats;
+  },
+
+  async deleteChatExchange(id: string): Promise<boolean> {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.CHAT_LOGS);
+      if (raw) {
+        const parsed: ChatExchangeItem[] = JSON.parse(raw);
+        localStorage.setItem(
+          STORAGE_KEYS.CHAT_LOGS,
+          JSON.stringify(parsed.filter(item => item.id !== id))
+        );
+      }
+    } catch {
+      // Ignore
+    }
+    try {
+      const res = await fetch(`/api/admin/chats/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      return res.ok;
+    } catch {
+      return true;
+    }
+  },
+
+  async clearChatExchanges(): Promise<boolean> {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.CHAT_LOGS);
+    } catch {
+      // Ignore
+    }
+    try {
+      const res = await fetch('/api/admin/chats', { method: 'DELETE' });
+      return res.ok;
+    } catch {
+      return true;
+    }
+  },
+
+  // 10. Real Visitor Analytics (Daily, Weekly, Monthly)
+  async recordVisit(page: string): Promise<VisitorStatsSummary | null> {
+    const visitorId = getOrCreateVisitorId();
+    try {
+      const res = await fetch('/api/stats/visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitorId, page })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.stats) {
+          try {
+            localStorage.setItem(STORAGE_KEYS.STATS_CACHE, JSON.stringify(json.stats));
+          } catch {
+            // Ignore
+          }
+          return json.stats;
+        }
+      }
+    } catch {
+      // Network fallback
+    }
+    return null;
+  },
+
+  async getVisitorStats(): Promise<VisitorStatsSummary | null> {
+    try {
+      const res = await fetch('/api/stats');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.stats) {
+          try {
+            localStorage.setItem(STORAGE_KEYS.STATS_CACHE, JSON.stringify(json.stats));
+          } catch {
+            // Ignore
+          }
+          return json.stats;
+        }
+      }
+    } catch {
+      // Fallback to cached stats
+    }
+    try {
+      const cached = localStorage.getItem(STORAGE_KEYS.STATS_CACHE);
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
   }
 };

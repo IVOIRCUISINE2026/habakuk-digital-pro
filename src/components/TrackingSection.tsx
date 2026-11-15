@@ -50,11 +50,6 @@ export const TrackingSection: React.FC<TrackingSectionProps> = ({
     performSearch(searchQuery);
   };
 
-  const handleQuickLookup = (ref: string) => {
-    setSearchQuery(ref);
-    performSearch(ref);
-  };
-
   // Progression steps for visual pipeline
   const pipelineSteps: { key: OrderStatus; label: string }[] = [
     { key: 'received', label: 'Reçue' },
@@ -115,25 +110,6 @@ export const TrackingSection: React.FC<TrackingSectionProps> = ({
               {isSearching ? <span>Recherche...</span> : <span>Vérifier le statut</span>}
             </button>
           </form>
-
-          {/* Quick Demo Lookups */}
-          <div className="mt-4 pt-3 border-t border-[#DCE9E0] flex flex-wrap items-center gap-2 text-xs text-[#64756B]">
-            <span>Exemples à tester :</span>
-            <button
-              type="button"
-              onClick={() => handleQuickLookup("UHD-2026-4821")}
-              className="px-2.5 py-1 rounded bg-[#E8F5EC] text-[#0B5D32] hover:bg-[#C9F0D5] font-mono-code font-semibold transition-colors cursor-pointer"
-            >
-              UHD-2026-4821 (En cours)
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickLookup("UHD-2026-7913")}
-              className="px-2.5 py-1 rounded bg-[#E8F5EC] text-[#0B5D32] hover:bg-[#C9F0D5] font-mono-code font-semibold transition-colors cursor-pointer"
-            >
-              UHD-2026-7913 (À l'étude)
-            </button>
-          </div>
         </div>
 
         {/* Search Results Display */}

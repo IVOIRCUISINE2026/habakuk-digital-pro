@@ -74,3 +74,41 @@ export interface StepItem {
   title: string;
   description: string;
 }
+
+export interface ChatExchangeItem {
+  id: string;
+  session_id: string;
+  user_message: string;
+  bot_reply: string;
+  created_at: string;
+}
+
+export interface StatsPeriodPoint {
+  key: string;
+  label: string;
+  sublabel?: string;
+  views: number;
+  uniqueVisitors: number;
+}
+
+export interface PageStatItem {
+  page: string;
+  label: string;
+  views: number;
+}
+
+export interface VisitorStatsSummary {
+  todayViews: number;
+  todayUnique: number;
+  weekViews: number;
+  weekUnique: number;
+  monthViews: number;
+  monthUnique: number;
+  totalViews: number;
+  totalUnique: number;
+  dailySeries: StatsPeriodPoint[];
+  weeklySeries: StatsPeriodPoint[];
+  monthlySeries: StatsPeriodPoint[];
+  pageBreakdown: PageStatItem[];
+  lastUpdated: string;
+}

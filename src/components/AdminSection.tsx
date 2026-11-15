@@ -10,21 +10,26 @@ import {
   MessageSquare,
   RefreshCw,
   X,
-  Send
+  Send,
+  Trash2,
+  Bot,
+  Clock
 } from 'lucide-react';
-import { Order, OrderStatus, User, ApplicationItem } from '../types';
+import { Order, OrderStatus, User, ApplicationItem, ChatExchangeItem } from '../types';
 import { api } from '../services/api';
 import { STATUS_DEFINITIONS } from '../data/catalog';
 
 interface AdminSectionProps {
   applications: ApplicationItem[];
   onUpdateAppStatus: (appId: string, status: string) => void;
+  onResetCatalogStatuses?: () => void;
   onAdminAuthChange: (isLoggedIn: boolean) => void;
 }
 
 export const AdminSection: React.FC<AdminSectionProps> = ({
   applications,
   onUpdateAppStatus,
+  onResetCatalogStatuses,
   onAdminAuthChange
 }) => {
   // Authentication state
@@ -33,12 +38,21 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Dashboard active tab: 'orders' or 'catalog'
-  const [activeTab, setActiveTab] = useState<'orders' | 'catalog'>('orders');
+  // Dashboard active tab: 'orders', 'catalog', or 'chats'
+  const [activeTab, setActiveTab] = useState<'orders' | 'catalog' | 'chats'>('orders');
 
   // Orders state
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  // Chatbot exchanges state
+  const [chats, setChats] = useState<ChatExchangeItem[]>([]);
+  const [chatSearchQuery, setChatSearchQuery] = useState('');
+  const [isLoadingChats, setIsLoadingChats] = useState(false);
+  const [confirmClearChats, setConfirmClearChats] = useState(false);
+  const [confirmClearOrders, setConfirmClearOrders] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [resetSuccessMsg, setResetSuccessMsg] = useState(false);
 
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,9 +77,22 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
     }
   };
 
+  const fetchChats = async () => {
+    setIsLoadingChats(true);
+    try {
+      const data = await api.getAdminChats();
+      setChats(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoadingChats(false);
+    }
+  };
+
   useEffect(() => {
     if (currentUser) {
       fetchOrders();
+      fetchChats();
       onAdminAuthChange(true);
     } else {
       onAdminAuthChange(false);
@@ -140,12 +167,28 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
     window.location.href = '/api/admin/orders/export';
   };
 
-  // Reset sample data
-  const handleResetData = () => {
-    if (window.confirm("Voulez-vous réinitialiser les commandes aux 3 exemples prédéfinis ?")) {
-      const reset = api.resetOrdersToDefault();
-      setOrders(reset);
+  // Reset all administration content (orders, chats, filters, catalog statuses)
+  const handleResetData = async () => {
+    setIsResetting(true);
+    try {
+      const [clearedOrders] = await Promise.all([
+        api.resetOrdersToDefault(),
+        api.clearChatExchanges()
+      ]);
+      setOrders(clearedOrders);
+      setChats([]);
       setSelectedOrder(null);
+      setSearchQuery('');
+      setFilterStatus('all');
+      setFilterType('all');
+      setChatSearchQuery('');
+      setConfirmClearOrders(false);
+      setConfirmClearChats(false);
+      onResetCatalogStatuses?.();
+      setResetSuccessMsg(true);
+      setTimeout(() => setResetSuccessMsg(false), 3500);
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -166,6 +209,27 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
       return matchSearch && matchStatus && matchApp && matchType;
     });
   }, [orders, searchQuery, filterStatus, filterApp, filterType]);
+
+  const filteredChats = useMemo(() => {
+    const q = chatSearchQuery.toLowerCase().trim();
+    if (!q) return chats;
+    return chats.filter(c =>
+      c.user_message.toLowerCase().includes(q) ||
+      c.bot_reply.toLowerCase().includes(q) ||
+      c.session_id.toLowerCase().includes(q)
+    );
+  }, [chats, chatSearchQuery]);
+
+  const handleDeleteChat = async (id: string) => {
+    await api.deleteChatExchange(id);
+    setChats(prev => prev.filter(c => c.id !== id));
+  };
+
+  const handleClearAllChats = async () => {
+    await api.clearChatExchanges();
+    setChats([]);
+    setConfirmClearChats(false);
+  };
 
   // KPIs calculations
   const kpis = useMemo(() => {
@@ -261,7 +325,7 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <button
               onClick={handleExportCSV}
               className="px-3.5 py-2 text-xs font-semibold rounded-xl border border-[#DCE9E0] bg-white hover:bg-[#F7FBF8] text-[#173528] flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -270,14 +334,36 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
               <span>Exporter CSV</span>
             </button>
 
-            <button
-              onClick={handleResetData}
-              className="px-3 py-2 text-xs font-medium rounded-xl border border-[#DCE9E0] bg-white hover:bg-[#F7FBF8] text-[#64756B] flex items-center gap-1.5 transition-colors cursor-pointer"
-              title="Restaurer les données démo"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Réinitialiser</span>
-            </button>
+            {!confirmClearOrders ? (
+              <button
+                type="button"
+                onClick={() => setConfirmClearOrders(true)}
+                className="px-3.5 py-2 text-xs font-semibold rounded-xl border border-[#DCE9E0] bg-white hover:bg-[#F7FBF8] text-[#173528] flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Réinitialiser tout le contenu de l’administration"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-[#168447]" />
+                <span>Réinitialiser</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={isResetting}
+                  onClick={handleResetData}
+                  className="px-3 py-2 text-xs font-semibold rounded-xl bg-[#168447] hover:bg-[#0B5D32] text-white cursor-pointer disabled:opacity-50"
+                >
+                  {isResetting ? 'Réinitialisation...' : 'Confirmer'}
+                </button>
+                <button
+                  type="button"
+                  disabled={isResetting}
+                  onClick={() => setConfirmClearOrders(false)}
+                  className="px-2.5 py-2 text-xs font-medium rounded-xl border border-[#DCE9E0] bg-white text-[#64756B] cursor-pointer"
+                >
+                  Annuler
+                </button>
+              </div>
+            )}
 
             <button
               onClick={handleLogout}
@@ -288,6 +374,13 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
             </button>
           </div>
         </div>
+
+        {resetSuccessMsg && (
+          <div className="p-3.5 rounded-xl bg-[#E8F5EC] border border-[#C9F0D5] text-[#0B5D32] text-xs font-medium flex items-center gap-2 shadow-2xs">
+            <CheckCircle2 className="w-4 h-4 text-[#168447] shrink-0" />
+            <span>Administration réinitialisée : commandes, échanges chatbot, filtres et statuts du catalogue remis à zéro.</span>
+          </div>
+        )}
 
         {/* 6 KPIs Grid with Tabular Figures */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
@@ -334,8 +427,8 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
           </div>
         </div>
 
-        {/* Tab switch between Orders and Catalog */}
-        <div className="flex items-center gap-2 border-b border-[#DCE9E0] pb-2">
+        {/* Tab switch between Orders, Catalog, and Chatbot History */}
+        <div className="flex flex-wrap items-center gap-2 border-b border-[#DCE9E0] pb-2">
           <button
             onClick={() => setActiveTab('orders')}
             className={`px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer ${
@@ -355,6 +448,20 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
             }`}
           >
             Statuts du catalogue ({applications.length})
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('chats');
+              fetchChats();
+            }}
+            className={`px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'chats'
+                ? 'bg-[#168447] text-white shadow-xs'
+                : 'text-[#64756B] hover:text-[#173528]'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>Historique des échanges ({chats.length})</span>
           </button>
         </div>
 
@@ -516,6 +623,156 @@ export const AdminSection: React.FC<AdminSectionProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: CHATBOT CONVERSATION HISTORY */}
+        {activeTab === 'chats' && (
+          <div className="space-y-4">
+            {/* Toolbar */}
+            <div className="bg-white p-4 rounded-xl border border-[#DCE9E0] shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-[#64756B] absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={chatSearchQuery}
+                  onChange={(e) => setChatSearchQuery(e.target.value)}
+                  placeholder="Rechercher dans les questions clients, réponses ou ID session..."
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-[#DCE9E0] bg-[#F7FBF8] focus:bg-white text-[#173528]"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={fetchChats}
+                  disabled={isLoadingChats}
+                  className="px-3 py-2 text-xs font-medium rounded-lg border border-[#DCE9E0] bg-white hover:bg-[#F7FBF8] text-[#173528] flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-[#168447] ${isLoadingChats ? 'animate-spin' : ''}`} />
+                  <span>Actualiser</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { window.location.href = '/api/admin/chats/export'; }}
+                  disabled={chats.length === 0}
+                  className="px-3 py-2 text-xs font-semibold rounded-lg border border-[#DCE9E0] bg-white hover:bg-[#F7FBF8] disabled:opacity-50 text-[#173528] flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5 text-[#168447]" />
+                  <span>Exporter CSV</span>
+                </button>
+
+                {chats.length > 0 && (
+                  !confirmClearChats ? (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmClearChats(true)}
+                      className="px-3 py-2 text-xs font-medium rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Vider l’historique</span>
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={handleClearAllChats}
+                        className="px-3 py-2 text-xs font-semibold rounded-lg bg-rose-600 hover:bg-rose-700 text-white cursor-pointer"
+                      >
+                        Confirmer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmClearChats(false)}
+                        className="px-2.5 py-2 text-xs font-medium rounded-lg border border-[#DCE9E0] bg-white text-[#64756B] cursor-pointer"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* Traceability List */}
+            <div className="bg-white rounded-2xl border border-[#DCE9E0] p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#DCE9E0]">
+                <div>
+                  <h3 className="font-heading font-bold text-base text-[#173528]">
+                    Traçabilité des échanges du chatbot client
+                  </h3>
+                  <p className="text-xs text-[#64756B]">
+                    Consultez l’ensemble des questions posées par vos visiteurs et les réponses fournies par l’assistant.
+                  </p>
+                </div>
+                <span className="text-xs font-mono-code font-semibold text-[#0B5D32] bg-[#E8F5EC] px-3 py-1 rounded-lg border border-[#C9F0D5] self-start sm:self-auto">
+                  {filteredChats.length} échange{filteredChats.length > 1 ? 's' : ''}
+                </span>
+              </div>
+
+              {filteredChats.length === 0 ? (
+                <div className="py-12 text-center border border-dashed border-[#DCE9E0] rounded-xl bg-[#F7FBF8]">
+                  <Bot className="w-8 h-8 text-[#168447]/60 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-[#173528]">
+                    Aucun échange enregistré pour le moment.
+                  </p>
+                  <p className="text-xs text-[#64756B] mt-1">
+                    Les questions posées au chatbot sur la page d’accueil apparaîtront automatiquement ici.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {filteredChats.map((chat) => (
+                    <div
+                      key={chat.id}
+                      className="p-4 rounded-xl border border-[#DCE9E0] bg-[#F7FBF8] space-y-3"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#64756B] pb-2 border-b border-[#DCE9E0]">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono-code font-bold text-[#0B5D32] bg-white px-2 py-0.5 rounded border border-[#DCE9E0]">
+                            {chat.session_id}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-[#168447]" />
+                            {new Date(chat.created_at).toLocaleString('fr-FR')}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteChat(chat.id)}
+                          className="p-1 text-[#64756B] hover:text-rose-600 rounded hover:bg-white transition-colors cursor-pointer"
+                          title="Supprimer cet échange"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div className="p-3 rounded-lg bg-white border border-[#DCE9E0]">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#64756B] mb-1">
+                            Question du client
+                          </p>
+                          <p className="text-[#173528] font-medium whitespace-pre-wrap leading-relaxed">
+                            {chat.user_message}
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-lg bg-[#E8F5EC]/60 border border-[#C9F0D5]">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#0B5D32] mb-1 flex items-center gap-1">
+                            <Bot className="w-3 h-3" />
+                            <span>Réponse de l’assistant</span>
+                          </p>
+                          <p className="text-[#173528] whitespace-pre-wrap leading-relaxed">
+                            {chat.bot_reply.replace(/\*\*(.*?)\*\*/g, '$1').replace(/__(.*?)__/g, '$1')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

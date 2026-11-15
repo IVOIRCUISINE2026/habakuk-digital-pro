@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { CatalogSection } from './components/CatalogSection';
@@ -7,9 +7,11 @@ import { ServicesSection } from './components/ServicesSection';
 import { StepsSection } from './components/StepsSection';
 import { OrderModule } from './components/OrderModule';
 import { TrackingSection } from './components/TrackingSection';
+import { StatisticsSection } from './components/StatisticsSection';
 import { AdminSection } from './components/AdminSection';
 import { AboutCreator } from './components/AboutCreator';
 import { Footer } from './components/Footer';
+import { ChatbotWidget } from './components/ChatbotWidget';
 import { api } from './services/api';
 import { ApplicationItem, Order } from './types';
 
@@ -20,12 +22,13 @@ export default function App() {
   const [orderTargetAppId, setOrderTargetAppId] = useState<string | undefined>(undefined);
   const [trackingRef, setTrackingRef] = useState<string>('');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(!!api.getStoredUser());
+  const lastRecordedTabRef = useRef<string | null>(null);
 
   // Listen to hash / url changes or initial tab
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace('#', '');
-      if (['accueil', 'applications', 'services', 'commande', 'suivi', 'administration'].includes(hash)) {
+      if (['accueil', 'applications', 'services', 'commande', 'suivi', 'statistiques', 'administration'].includes(hash)) {
         setCurrentTab(hash);
       }
     };
@@ -33,6 +36,13 @@ export default function App() {
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
+
+  // Record real page visit when navigating between tabs
+  useEffect(() => {
+    if (lastRecordedTabRef.current === currentTab) return;
+    lastRecordedTabRef.current = currentTab;
+    api.recordVisit(currentTab);
+  }, [currentTab]);
 
   const handleNavigate = (tab: string, param?: string) => {
     setCurrentTab(tab);
@@ -72,6 +82,11 @@ export default function App() {
   const handleUpdateAppStatus = (appId: string, status: string) => {
     const updated = api.updateApplicationStatus(appId, status);
     setApplications(updated);
+  };
+
+  const handleResetCatalogStatuses = () => {
+    const resetApps = api.resetApplicationsToDefault();
+    setApplications(resetApps);
   };
 
   return (
@@ -166,11 +181,17 @@ export default function App() {
           />
         )}
 
-        {/* TAB 6: ADMINISTRATION */}
+        {/* TAB 6: STATISTIQUES */}
+        {currentTab === 'statistiques' && (
+          <StatisticsSection />
+        )}
+
+        {/* TAB 7: ADMINISTRATION */}
         {currentTab === 'administration' && (
           <AdminSection
             applications={applications}
             onUpdateAppStatus={handleUpdateAppStatus}
+            onResetCatalogStatuses={handleResetCatalogStatuses}
             onAdminAuthChange={setIsAdminLoggedIn}
           />
         )}
@@ -183,6 +204,9 @@ export default function App() {
         onClose={() => setDemoApp(null)}
         onOrder={(app) => handleOrderApp(app)}
       />
+
+      {/* Floating Chatbot Assistant on Homepage */}
+      {currentTab === 'accueil' && <ChatbotWidget />}
 
       {/* Global Footer */}
       <Footer onNavigate={handleNavigate} />

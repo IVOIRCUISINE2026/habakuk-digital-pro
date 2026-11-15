@@ -18,7 +18,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   };
 
   return (
-    <footer className="bg-[#173528] text-white pt-16 pb-12 border-t border-[#0B5D32]">
+    <footer className="bg-[#173528] text-white pt-16 pb-24 sm:pb-20 border-t border-[#0B5D32]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Grid */}
@@ -88,6 +88,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   className="hover:text-white transition-colors cursor-pointer"
                 >
                   Suivi de commande en direct
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => { onNavigate('statistiques'); }}
+                  className="hover:text-white transition-colors cursor-pointer"
+                >
+                  Statistiques de visites
                 </button>
               </li>
               <li>
