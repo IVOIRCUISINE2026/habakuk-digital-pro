@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { X, Check, Copy, Sparkles, Calendar, Award, Globe, ArrowRight, FileDown } from 'lucide-react';
+import React from 'react';
+import { X, Check, Sparkles, ArrowRight, FileDown } from 'lucide-react';
 import { ApplicationItem } from '../types';
 import { downloadApplicationPdf } from '../utils/pdfGenerator';
+import { AppInteractiveSimulator } from './AppInteractiveSimulators';
 
 interface AppDemoModalProps {
   app: ApplicationItem | null;
@@ -12,105 +13,12 @@ interface AppDemoModalProps {
 export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrder }) => {
   if (!app) return null;
 
-  // State for Calendrier numérique demo
-  const [calendarType, setCalendarType] = useState<'entreprise' | 'scolaire' | 'eglise' | 'personnel'>('entreprise');
-  const [calendarAccent, setCalendarAccent] = useState<'emerald' | 'amber' | 'slate'>('emerald');
-  const [diplomaStyle, setDiplomaStyle] = useState<'formation' | 'honneur' | 'academique'>('formation');
-  const [diplomaRecipient, setDiplomaRecipient] = useState<string>('Konan Ahoua Jean');
-  const [webSiteType, setWebSiteType] = useState<'vitrine' | 'ecommerce' | 'portail'>('vitrine');
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
-
-  // State for Questions pour un Chrétien demo
-  const [quizQuestionIndex, setQuizQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [quizScore, setQuizScore] = useState(0);
-
-  // State for Prompt Generator demo
-  const [promptCategory, setPromptCategory] = useState<'business' | 'redaction' | 'education'>('business');
-  const [promptResult, setPromptResult] = useState<string>(
-    "Agis en tant qu'expert en stratégie d'entreprise en Afrique de l'Ouest. Analyse l'opportunité de digitaliser les processus de commande pour une PME ivoirienne et propose un plan d'action en 5 étapes clés."
-  );
-
-  // Sample Biblical Quiz Questions
-  const sampleBiblicalQuestions = [
-    {
-      round: "Manche 1 : 4 À LA SUITE",
-      question: "Quel prophète de l'Ancien Testament a écrit : 'Car c’est une prophétie dont le temps est déjà fixé, elle marche vers son terme...' ?",
-      options: ["Ésaïe", "Habakuk", "Jérémie", "Daniel"],
-      correct: 1,
-      explanation: "C'est le prophète Habakuk (Habakuk 2:3), inspirateur du nom Univers Habakuk !"
-    },
-    {
-      round: "Manche 2 : 9 À LA SUITE",
-      question: "Dans quel livre et chapitre de la Bible trouve-t-on le célèbre passage sur l'amour : 'L'amour est patient, il est plein de bonté...' ?",
-      options: ["1 Corinthiens 13", "Romains 8", "Galates 5", "Psaume 23"],
-      correct: 0,
-      explanation: "1 Corinthiens 13, souvent appelé le cantique de l'amour chrétien rédigé par l'apôtre Paul."
-    },
-    {
-      round: "Manche 3 : LE CHOC FINAL",
-      question: "Combien de jours et de nuits Noé et sa famille sont-ils restés dans l'arche avant que les eaux ne commencent à baisser ?",
-      options: ["7 jours", "40 jours et 40 nuits", "150 jours", "120 jours"],
-      correct: 1,
-      explanation: "Il plut 40 jours et 40 nuits sur la terre (Genèse 7:12)."
-    }
-  ];
-
-  const calendarPresets = {
-    entreprise: {
-      title: "Calendrier Corporate 2026",
-      subtitle: "Logo société · Réunions trimestrielles · Jours fériés CI",
-      highlights: [4, 15, 22, 28]
-    },
-    scolaire: {
-      title: "Calendrier Académique 2026-2027",
-      subtitle: "Rentrées · Examens blancs · Congés scolaires",
-      highlights: [2, 11, 19, 26]
-    },
-    eglise: {
-      title: "Calendrier Cultuel & Événements",
-      subtitle: "Séminaires · Veillées · Temps forts communautaires",
-      highlights: [7, 14, 21, 29]
-    },
-    personnel: {
-      title: "Calendrier Photo & Famille",
-      subtitle: "Anniversaires · Souvenirs illustrés · Citations",
-      highlights: [5, 12, 18, 25]
-    }
-  };
-
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCode(code);
-    setTimeout(() => setCopiedCode(null), 2000);
-  };
-
-  const handleAnswerSelect = (index: number) => {
-    setSelectedAnswer(index);
-    if (index === sampleBiblicalQuestions[quizQuestionIndex].correct) {
-      setQuizScore(prev => prev + 1);
-    }
-  };
-
-  const handleNextQuiz = () => {
-    setSelectedAnswer(null);
-    setQuizQuestionIndex((prev) => (prev + 1) % sampleBiblicalQuestions.length);
-  };
-
-  const handleCategoryChange = (cat: 'business' | 'redaction' | 'education') => {
-    setPromptCategory(cat);
-    if (cat === 'business') {
-      setPromptResult("Agis en tant que consultant en transformation numérique en Côte d’Ivoire. Rédige un audit concis des opportunités d'automatisation des factures et livraisons pour un commerçant local.");
-    } else if (cat === 'redaction') {
-      setPromptResult("Rédige un message percutant et professionnel pour présenter une nouvelle application mobile à des directeurs d'écoles à Abidjan, avec un ton chaleureux, respectueux et moderne.");
-    } else {
-      setPromptResult("Conçois une série de 5 exercices progressifs de programmation web (HTML/CSS) adaptés à des élèves débutants de lycée, avec corrigé type et critères d'évaluation.");
-    }
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div 
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
         className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-[#DCE9E0] overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
@@ -126,8 +34,10 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
             </h2>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-[#64756B] hover:text-[#173528] hover:bg-white border border-transparent hover:border-[#DCE9E0] transition-colors"
+            className="p-2 rounded-xl text-[#64756B] hover:text-[#173528] hover:bg-white border border-transparent hover:border-[#DCE9E0] transition-colors cursor-pointer"
+            aria-label="Fermer la démonstration"
           >
             <X className="w-5 h-5" />
           </button>
@@ -135,10 +45,11 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
 
         {/* Modal Body */}
         <div className="p-6 overflow-y-auto space-y-6">
-          
           {/* Status banner */}
           <div className="p-3.5 rounded-xl bg-[#E8F5EC] border border-[#C9F0D5] flex items-center justify-between text-xs text-[#0B5D32]">
-            <span>Statut : <strong>{app.status}</strong></span>
+            <span>
+              Statut : <strong>{app.status}</strong>
+            </span>
             <span className="font-mono-code font-bold">{app.id}</span>
           </div>
 
@@ -157,430 +68,11 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
             </div>
           )}
 
-          <p className="text-sm text-[#64756B] leading-relaxed">
-            {app.description}
-          </p>
+          <p className="text-sm text-[#64756B] leading-relaxed">{app.description}</p>
 
-          {/* Interactive simulator depending on app */}
+          {/* Interactive Simulator tailored to each of the 17 apps */}
           <div className="border border-[#DCE9E0] rounded-xl p-5 bg-[#F7FBF8]">
-            
-            {/* 1. Calendrier numérique (APP-012) */}
-            {app.id === 'APP-012' ? (
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <h3 className="font-heading font-bold text-sm text-[#173528] flex items-center gap-1.5">
-                      <Calendar className="w-4 h-4 text-[#168447]" />
-                      <span>Configurateur de calendrier personnalisé</span>
-                    </h3>
-                    <p className="text-xs text-[#64756B]">Choisissez un style pour prévisualiser votre maquette sur mesure</p>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    {(['emerald', 'amber', 'slate'] as const).map((accent) => (
-                      <button
-                        key={accent}
-                        type="button"
-                        onClick={() => setCalendarAccent(accent)}
-                        className={`w-5 h-5 rounded-full border-2 transition-transform cursor-pointer ${
-                          accent === 'emerald'
-                            ? 'bg-[#168447]'
-                            : accent === 'amber'
-                              ? 'bg-amber-600'
-                              : 'bg-slate-800'
-                        } ${calendarAccent === accent ? 'border-[#173528] scale-110' : 'border-white'}`}
-                        title="Changer le thème couleur"
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {([
-                    { id: 'entreprise', label: 'Entreprise' },
-                    { id: 'scolaire', label: 'Scolaire' },
-                    { id: 'eglise', label: 'Église & Culte' },
-                    { id: 'personnel', label: 'Photo & Famille' }
-                  ] as const).map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setCalendarType(item.id)}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
-                        calendarType === item.id
-                          ? 'bg-[#168447] text-white'
-                          : 'bg-white text-[#64756B] border border-[#DCE9E0] hover:text-[#173528]'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="rounded-xl bg-white border border-[#DCE9E0] overflow-hidden shadow-2xs">
-                  <div
-                    className={`px-4 py-2.5 text-white flex items-center justify-between ${
-                      calendarAccent === 'emerald'
-                        ? 'bg-[#168447]'
-                        : calendarAccent === 'amber'
-                          ? 'bg-amber-600'
-                          : 'bg-slate-800'
-                    }`}
-                  >
-                    <div>
-                      <p className="text-xs font-bold">{calendarPresets[calendarType].title}</p>
-                      <p className="text-[10px] opacity-90">{calendarPresets[calendarType].subtitle}</p>
-                    </div>
-                    <span className="text-[10px] font-mono-code font-semibold bg-white/20 px-2 py-0.5 rounded">
-                      NOV. 2026
-                    </span>
-                  </div>
-
-                  <div className="p-3">
-                    <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[#64756B] mb-1.5">
-                      {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, idx) => (
-                        <span key={idx}>{d}</span>
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-7 gap-1 text-center text-[11px]">
-                      {Array.from({ length: 30 }, (_, i) => i + 1).map((day) => {
-                        const isHighlighted = calendarPresets[calendarType].highlights.includes(day);
-                        return (
-                          <div
-                            key={day}
-                            className={`py-1 rounded font-medium ${
-                              isHighlighted
-                                ? calendarAccent === 'emerald'
-                                  ? 'bg-[#E8F5EC] text-[#0B5D32] font-bold border border-[#C9F0D5]'
-                                  : calendarAccent === 'amber'
-                                    ? 'bg-amber-50 text-amber-900 font-bold border border-amber-200'
-                                    : 'bg-slate-100 text-slate-900 font-bold border border-slate-300'
-                                : 'text-[#173528]'
-                            }`}
-                          >
-                            {day}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-[11px] text-[#64756B] italic">
-                  * Conception complète sur mesure : formats mural, chevalet, poche, PDF haute définition ou calendrier web interactif.
-                </p>
-              </div>
-            ) : null}
-
-            {/* 2. QUESTIONS POUR UN CHRÉTIEN (APP-013) / LE MILLIONNAIRE QUIZ (APP-015) */}
-            {app.id === 'APP-013' || app.id === 'APP-015' ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-[#DCE9E0] pb-2">
-                  <span className="text-xs font-bold text-[#168447] uppercase tracking-wide">
-                    {sampleBiblicalQuestions[quizQuestionIndex].round}
-                  </span>
-                  <span className="text-xs text-[#64756B] font-mono-code">
-                    Score : <strong className="text-[#173528]">{quizScore} pts</strong>
-                  </span>
-                </div>
-
-                <p className="text-sm font-semibold text-[#173528]">
-                  {sampleBiblicalQuestions[quizQuestionIndex].question}
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {sampleBiblicalQuestions[quizQuestionIndex].options.map((opt, idx) => {
-                    const isSelected = selectedAnswer === idx;
-                    const isCorrect = idx === sampleBiblicalQuestions[quizQuestionIndex].correct;
-                    let btnStyle = "bg-white border-[#DCE9E0] text-[#173528] hover:border-[#168447]";
-                    if (selectedAnswer !== null) {
-                      if (isCorrect) {
-                        btnStyle = "bg-emerald-50 border-emerald-500 text-emerald-900 font-semibold";
-                      } else if (isSelected) {
-                        btnStyle = "bg-rose-50 border-rose-500 text-rose-900";
-                      }
-                    }
-                    return (
-                      <button
-                        key={idx}
-                        disabled={selectedAnswer !== null}
-                        onClick={() => handleAnswerSelect(idx)}
-                        className={`p-3 text-left text-xs rounded-xl border transition-all ${btnStyle}`}
-                      >
-                        <span className="font-bold mr-2">{String.fromCharCode(65 + idx)}.</span>
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {selectedAnswer !== null && (
-                  <div className="p-3 bg-white rounded-lg border border-[#DCE9E0] text-xs space-y-2">
-                    <p className="text-[#64756B]">
-                      <strong>Explication :</strong> {sampleBiblicalQuestions[quizQuestionIndex].explanation}
-                    </p>
-                    <button
-                      onClick={handleNextQuiz}
-                      className="px-4 py-1.5 text-xs font-semibold text-white bg-[#168447] rounded-lg hover:bg-[#0B5D32] transition-colors"
-                    >
-                      Question suivante →
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : null}
-
-            {/* 3. Habakuk Generated Prompts (APP-006) / Formation IA (APP-002) */}
-            {app.id === 'APP-006' || app.id === 'APP-002' ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-[#173528]">Objectif du prompt :</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => handleCategoryChange('business')}
-                      className={`px-2.5 py-1 text-xs rounded-lg transition-colors ${
-                        promptCategory === 'business' ? 'bg-[#168447] text-white' : 'bg-white text-[#64756B] border border-[#DCE9E0]'
-                      }`}
-                    >
-                      Business & PME
-                    </button>
-                    <button
-                      onClick={() => handleCategoryChange('redaction')}
-                      className={`px-2.5 py-1 text-xs rounded-lg transition-colors ${
-                        promptCategory === 'redaction' ? 'bg-[#168447] text-white' : 'bg-white text-[#64756B] border border-[#DCE9E0]'
-                      }`}
-                    >
-                      Communication
-                    </button>
-                    <button
-                      onClick={() => handleCategoryChange('education')}
-                      className={`px-2.5 py-1 text-xs rounded-lg transition-colors ${
-                        promptCategory === 'education' ? 'bg-[#168447] text-white' : 'bg-white text-[#64756B] border border-[#DCE9E0]'
-                      }`}
-                    >
-                      Pédagogie
-                    </button>
-                  </div>
-                </div>
-
-                <div className="p-3.5 bg-white rounded-xl border border-[#DCE9E0] relative group">
-                  <p className="text-xs text-[#173528] leading-relaxed font-mono-code">
-                    "{promptResult}"
-                  </p>
-                  <button
-                    onClick={() => handleCopyCode(promptResult)}
-                    className="mt-2 text-[11px] text-[#168447] font-semibold flex items-center gap-1 hover:underline"
-                  >
-                    {copiedCode === promptResult ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedCode === promptResult ? "Copié !" : "Copier le prompt"}</span>
-                  </button>
-                </div>
-              </div>
-            ) : null}
-
-            {/* 4. CV & MOTIVATION PRO (APP-010) */}
-            {app.id === 'APP-010' ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between border-b border-[#DCE9E0] pb-2">
-                  <span className="text-xs font-semibold text-[#168447]">Aperçu de mise en page CV moderne</span>
-                  <span className="text-[11px] text-[#64756B]">Format PDF A4 conforme ATS</span>
-                </div>
-                <div className="p-4 bg-white rounded-lg border border-[#DCE9E0] space-y-2 text-xs">
-                  <div className="border-b border-[#DCE9E0] pb-2">
-                    <h4 className="font-heading font-bold text-sm text-[#173528]">KOUADIO JEAN-MARC</h4>
-                    <p className="text-[11px] text-[#168447] font-medium">Responsable Logistique & Approvisionnement · Abidjan</p>
-                  </div>
-                  <div>
-                    <span className="font-semibold text-[#173528]">Profil professionnel :</span>
-                    <p className="text-[#64756B] text-[11px] leading-relaxed mt-0.5">
-                      Expert logistique avec 6 ans d’expérience en gestion des flux de marchandises et optimisation des chaînes d'approvisionnement en Côte d’Ivoire.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    <span className="px-2 py-0.5 bg-[#E8F5EC] text-[#0B5D32] rounded text-[10px] font-medium">Gestion de stock</span>
-                    <span className="px-2 py-0.5 bg-[#E8F5EC] text-[#0B5D32] rounded text-[10px] font-medium">ERP & Excel Pro</span>
-                    <span className="px-2 py-0.5 bg-[#E8F5EC] text-[#0B5D32] rounded text-[10px] font-medium">Management</span>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-
-            {/* 5. Ivoir'Cuisine Pro (APP-016) */}
-            {app.id === 'APP-016' ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between border-b border-[#DCE9E0] pb-2">
-                  <span className="text-xs font-semibold text-[#168447]">Fiche recette : Sauce Graine & Foutou Banane</span>
-                  <span className="text-[11px] text-[#64756B]">Temps : 1h45 · Difficulté : Moyenne</span>
-                </div>
-                <div className="p-3.5 bg-white rounded-lg border border-[#DCE9E0] space-y-2 text-xs text-[#64756B]">
-                  <p><strong className="text-[#173528]">Ingrédients clés :</strong> Noix de palme fraîches, poisson fumé (mâchoiron), crabe de mer, viande de bœuf, piment frais, oignon, sel, cube d'assaisonnement.</p>
-                  <p><strong className="text-[#173528]">Astuce du chef ivoirien :</strong> Laisser mijoter à feu doux jusqu'à ce que l'huile rouge remonte délicatement en surface pour une saveur onctueuse et authentique.</p>
-                </div>
-              </div>
-            ) : null}
-
-            {/* 6. Diplômes numériques (APP-011) */}
-            {app.id === 'APP-011' ? (
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <h3 className="font-heading font-bold text-sm text-[#173528] flex items-center gap-1.5">
-                      <Award className="w-4 h-4 text-[#168447]" />
-                      <span>Aperçu studio de diplômes personnalisés</span>
-                    </h3>
-                    <p className="text-xs text-[#64756B]">Testez le rendu de votre diplôme numérique ou parchemin imprimable</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {([
-                    { id: 'formation', label: 'Certificat de formation' },
-                    { id: 'honneur', label: 'Diplôme d’honneur' },
-                    { id: 'academique', label: 'Diplôme académique' }
-                  ] as const).map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setDiplomaStyle(item.id)}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
-                        diplomaStyle === item.id
-                          ? 'bg-[#168447] text-white'
-                          : 'bg-white text-[#64756B] border border-[#DCE9E0] hover:text-[#173528]'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-[#173528] mb-1">
-                    Nom du bénéficiaire (aperçu en direct)
-                  </label>
-                  <input
-                    type="text"
-                    value={diplomaRecipient}
-                    onChange={(e) => setDiplomaRecipient(e.target.value)}
-                    placeholder="Ex : Konan Ahoua Jean"
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-[#DCE9E0] bg-white text-[#173528] focus:outline-none focus:border-[#168447]"
-                  />
-                </div>
-
-                <div className="rounded-xl border-2 border-[#0B5D32]/30 bg-white p-4 sm:p-5 shadow-2xs text-center space-y-2.5 relative overflow-hidden">
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-[#168447]">
-                    Univers Habakuk Digital Pro · Authentifié QR
-                  </div>
-                  <h4 className="font-heading text-base font-extrabold text-[#173528]">
-                    {diplomaStyle === 'formation'
-                      ? 'CERTIFICAT DE RÉUSSITE'
-                      : diplomaStyle === 'honneur'
-                        ? 'DIPLÔME D’HONNEUR & MÉRITE'
-                        : 'DIPLÔME OFFICIEL DE FIN D’ÉTUDES'}
-                  </h4>
-                  <p className="text-[11px] text-[#64756B]">Décerné avec distinction à</p>
-                  <p className="font-heading text-lg font-bold text-[#0B5D32] border-b border-dashed border-[#DCE9E0] pb-1.5 inline-block px-4">
-                    {diplomaRecipient.trim() || 'Nom du Lauréat'}
-                  </p>
-                  <div className="flex items-center justify-between pt-2 text-[10px] text-[#64756B]">
-                    <span>Sceau officiel & Signature</span>
-                    <span className="font-mono-code font-semibold text-[#0B5D32] bg-[#E8F5EC] px-2 py-0.5 rounded">
-                      ID #DIP-2026-CI
-                    </span>
-                  </div>
-                </div>
-
-                <p className="text-[11px] text-[#64756B] italic">
-                  * Conception complète sur mesure : formats PDF sécurisé avec QR code de vérification, version web et haute résolution d’impression.
-                </p>
-              </div>
-            ) : null}
-
-            {/* 7. Conception de site web (APP-017) */}
-            {app.id === 'APP-017' ? (
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-heading font-bold text-sm text-[#173528] flex items-center gap-1.5">
-                    <Globe className="w-4 h-4 text-[#168447]" />
-                    <span>Configurateur de site web personnalisé</span>
-                  </h3>
-                  <p className="text-xs text-[#64756B]">Explorez les architectures web adaptées à votre activité</p>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {([
-                    { id: 'vitrine', label: 'Site Vitrine Pro' },
-                    { id: 'ecommerce', label: 'Boutique E-commerce' },
-                    { id: 'portail', label: 'Portail & Application Web' }
-                  ] as const).map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setWebSiteType(item.id)}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
-                        webSiteType === item.id
-                          ? 'bg-[#168447] text-white'
-                          : 'bg-white text-[#64756B] border border-[#DCE9E0] hover:text-[#173528]'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="rounded-xl bg-white border border-[#DCE9E0] overflow-hidden shadow-2xs">
-                  <div className="px-3 py-2 bg-[#F7FBF8] border-b border-[#DCE9E0] flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-rose-400" />
-                      <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    </div>
-                    <span className="text-[10px] font-mono-code text-[#64756B]">
-                      https://votre-projet.ci
-                    </span>
-                  </div>
-                  <div className="p-4 space-y-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#0B5D32]">
-                        {webSiteType === 'vitrine'
-                          ? 'Présentation d’entreprise & Prise de rendez-vous'
-                          : webSiteType === 'ecommerce'
-                            ? 'Catalogue produits, Panier & Paiement Mobile Money'
-                            : 'Espace membre, Tableau de bord & Base de données'}
-                      </span>
-                      <span className="text-[10px] font-semibold bg-[#E8F5EC] text-[#0B5D32] px-2 py-0.5 rounded">
-                        100% Responsive
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[#64756B] leading-relaxed">
-                      {webSiteType === 'vitrine'
-                        ? 'Idéal pour entreprises, cabinets, écoles, ONG ou marques personnelles souhaitant valoriser leur image en ligne avec formulaire de contact et lien WhatsApp.'
-                        : webSiteType === 'ecommerce'
-                          ? 'Vendez vos produits en ligne 24h/24 avec gestion du catalogue, suivi des commandes et intégration fluide adaptée au marché ivoirien.'
-                          : 'Solution web sur mesure avec authentification sécurisée, gestion des utilisateurs et automatisation de vos processus métier.'}
-                    </p>
-                  </div>
-                </div>
-
-                <p className="text-[11px] text-[#64756B] italic">
-                  * Chaque site web personnalisé inclut l’adaptation mobile, le référencement de base et l’accompagnement au déploiement.
-                </p>
-              </div>
-            ) : null}
-
-            {/* Default for other apps */}
-            {!['APP-011', 'APP-012', 'APP-013', 'APP-015', 'APP-006', 'APP-002', 'APP-010', 'APP-016', 'APP-017'].includes(app.id) && (
-              <div className="space-y-3">
-                <h4 className="font-heading font-semibold text-xs text-[#173528]">Fonctionnalités au cahier des charges :</h4>
-                <ul className="space-y-1.5">
-                  {app.features.map((feat, i) => (
-                    <li key={i} className="flex items-center gap-2 text-xs text-[#173528]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#168447]" />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
+            <AppInteractiveSimulator key={app.id} app={app} />
           </div>
 
           {/* Key deliverables */}
@@ -607,7 +99,6 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
               </div>
             </div>
           </div>
-
         </div>
 
         {/* Modal Footer with mandatory Order button */}
@@ -617,6 +108,7 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
           </div>
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <button
+              type="button"
               onClick={() => downloadApplicationPdf(app)}
               className="px-3.5 py-2.5 text-xs font-semibold text-[#0B5D32] bg-[#E8F5EC] hover:bg-[#C9F0D5] border border-[#C9F0D5] rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               title="Télécharger la fiche catalogue officielle en PDF"
@@ -625,12 +117,14 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
               <span>Fiche PDF</span>
             </button>
             <button
+              type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-xs font-medium text-[#64756B] hover:text-[#173528] rounded-xl hover:bg-white border border-[#DCE9E0] transition-colors"
+              className="px-4 py-2.5 text-xs font-medium text-[#64756B] hover:text-[#173528] rounded-xl hover:bg-white border border-[#DCE9E0] transition-colors cursor-pointer"
             >
               Fermer
             </button>
             <button
+              type="button"
               onClick={() => {
                 onClose();
                 onOrder(app);
@@ -642,7 +136,6 @@ export const AppDemoModal: React.FC<AppDemoModalProps> = ({ app, onClose, onOrde
             </button>
           </div>
         </div>
-
       </div>
     </div>
   );
