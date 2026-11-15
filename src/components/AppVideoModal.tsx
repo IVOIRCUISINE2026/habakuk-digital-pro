@@ -30,7 +30,7 @@ function formatSeconds(sec: number): string {
 function buildFallbackVideoOverview(app: ApplicationItem): AppVideoOverview {
   const feats = app.features || [];
   return {
-    durationSec: 40,
+    durationSec: 45,
     headline: app.name,
     narrationScript: `${app.name} : ${app.description}`,
     scenes: [
@@ -40,31 +40,31 @@ function buildFallbackVideoOverview(app: ApplicationItem): AppVideoOverview {
         caption: app.description,
         highlight: app.category,
         startSec: 0,
-        endSec: 10,
+        endSec: 15,
       },
       {
         badge: '02 · FONCTIONNALITÉS',
         title: 'Points clés inclus',
         caption: feats.slice(0, 2).join(' · ') || app.description,
         highlight: feats[0] || 'Solution prête à l’emploi',
-        startSec: 10,
-        endSec: 20,
+        startSec: 15,
+        endSec: 25,
       },
       {
         badge: '03 · VALEUR AJOUTÉE',
         title: 'Conçu pour votre performance',
         caption: feats.slice(2).join(' · ') || 'Interface claire, rapide et adaptée au marché ivoirien.',
         highlight: 'Ergonomie mobile & ordinateur',
-        startSec: 20,
-        endSec: 30,
+        startSec: 25,
+        endSec: 35,
       },
       {
         badge: '04 · DÉPLOIEMENT',
         title: 'Disponible sur commande',
         caption: 'Commandez ou personnalisez cette solution avec Univers Habakuk Digital Pro.',
         highlight: 'Accompagnement par Ahoret Jean Cyrille',
-        startSec: 30,
-        endSec: 40,
+        startSec: 35,
+        endSec: 45,
       },
     ],
   };
