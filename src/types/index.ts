@@ -17,6 +17,22 @@ export interface StatusHistoryItem {
   note?: string;
 }
 
+export interface VideoScene {
+  badge: string;
+  title: string;
+  caption: string;
+  highlight: string;
+  startSec: number;
+  endSec: number;
+}
+
+export interface AppVideoOverview {
+  durationSec: number;
+  headline: string;
+  narrationScript: string;
+  scenes: VideoScene[];
+}
+
 export interface ApplicationItem {
   id: string;
   name: string;
@@ -28,6 +44,7 @@ export interface ApplicationItem {
   demoType?: 'code_generator' | 'calendar_designer' | 'diploma_designer' | 'web_designer' | 'quiz_chretien' | 'prompt_generator' | 'cv_builder' | 'cuisine_recipe' | 'interactive_feature';
   image_url?: string;
   pdf_catalog_url?: string;
+  videoOverview?: AppVideoOverview;
 }
 
 export interface ServiceItem {

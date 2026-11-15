@@ -3,6 +3,7 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { CatalogSection } from './components/CatalogSection';
 import { AppDemoModal } from './components/AppDemoModal';
+import { AppVideoModal } from './components/AppVideoModal';
 import { ServicesSection } from './components/ServicesSection';
 import { StepsSection } from './components/StepsSection';
 import { OrderModule } from './components/OrderModule';
@@ -19,6 +20,7 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<string>('accueil');
   const [applications, setApplications] = useState<ApplicationItem[]>(api.getApplications());
   const [demoApp, setDemoApp] = useState<ApplicationItem | null>(null);
+  const [videoApp, setVideoApp] = useState<ApplicationItem | null>(null);
   const [orderTargetAppId, setOrderTargetAppId] = useState<string | undefined>(undefined);
   const [trackingRef, setTrackingRef] = useState<string>('');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(!!api.getStoredUser());
@@ -63,6 +65,10 @@ export default function App() {
 
   const handlePreviewApp = (app: ApplicationItem) => {
     setDemoApp(app);
+  };
+
+  const handlePreviewVideo = (app: ApplicationItem) => {
+    setVideoApp(app);
   };
 
   const handleSelectService = (_serviceName: string) => {
@@ -122,6 +128,7 @@ export default function App() {
                 applications={applications}
                 onOrderApp={handleOrderApp}
                 onPreviewApp={handlePreviewApp}
+                onPreviewVideo={handlePreviewVideo}
               />
             </div>
 
@@ -143,6 +150,7 @@ export default function App() {
               applications={applications}
               onOrderApp={handleOrderApp}
               onPreviewApp={handlePreviewApp}
+              onPreviewVideo={handlePreviewVideo}
             />
             <StepsSection
               onOrderClick={() => handleNavigate('commande')}
@@ -202,6 +210,17 @@ export default function App() {
       <AppDemoModal
         app={demoApp}
         onClose={() => setDemoApp(null)}
+        onOrder={(app) => handleOrderApp(app)}
+      />
+
+      {/* Interactive App Video Overview Modal */}
+      <AppVideoModal
+        app={videoApp}
+        onClose={() => setVideoApp(null)}
+        onOpenDemo={(app) => {
+          setVideoApp(null);
+          setDemoApp(app);
+        }}
         onOrder={(app) => handleOrderApp(app)}
       />
 

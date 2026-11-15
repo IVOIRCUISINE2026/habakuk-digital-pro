@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Eye, ShoppingCart, Check, FileDown, Download } from 'lucide-react';
+import { Search, Eye, PlayCircle, ShoppingCart, Check, FileDown, Download } from 'lucide-react';
 import { ApplicationItem } from '../types';
 import { downloadApplicationPdf, downloadFullCataloguePdf } from '../utils/pdfGenerator';
 
@@ -7,12 +7,14 @@ interface CatalogSectionProps {
   applications: ApplicationItem[];
   onOrderApp: (app: ApplicationItem) => void;
   onPreviewApp: (app: ApplicationItem) => void;
+  onPreviewVideo: (app: ApplicationItem) => void;
 }
 
 export const CatalogSection: React.FC<CatalogSectionProps> = ({
   applications,
   onOrderApp,
   onPreviewApp,
+  onPreviewVideo,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -216,32 +218,43 @@ export const CatalogSection: React.FC<CatalogSectionProps> = ({
 
                 </div>
 
-                {/* Actions: Download PDF, Demo Simulator, and Mandatory Order Button */}
+                {/* Actions: Demo Preview + Video Overview side-by-side, PDF Catalog, and Mandatory Order Button */}
                 <div className="mt-6 pt-4 border-t border-[#DCE9E0] space-y-2">
                   
-                  {/* Row 1: PDF Download & Demo View */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => downloadApplicationPdf(app)}
-                      className="flex-1 py-2 px-2.5 text-xs font-semibold text-[#0B5D32] bg-[#E8F5EC] hover:bg-[#C9F0D5] border border-[#C9F0D5] rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
-                      title="Télécharger la fiche catalogue officielle en PDF"
-                    >
-                      <FileDown className="w-3.5 h-3.5 text-[#168447]" />
-                      <span>Catalogue PDF</span>
-                    </button>
-
+                  {/* Row 1: Aperçu démo & Aperçu vidéo côte à côte */}
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
                       onClick={() => onPreviewApp(app)}
-                      className="flex-1 py-2 px-2.5 text-xs font-medium text-[#173528] bg-white hover:bg-[#F7FBF8] border border-[#DCE9E0] hover:border-[#168447] rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="py-2 px-2.5 text-xs font-medium text-[#173528] bg-white hover:bg-[#F7FBF8] border border-[#DCE9E0] hover:border-[#168447] rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Eye className="w-3.5 h-3.5 text-[#168447]" />
-                      <span>Aperçu démo</span>
+                      <Eye className="w-3.5 h-3.5 text-[#168447] shrink-0" />
+                      <span className="truncate">Aperçu démo</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onPreviewVideo(app)}
+                      className="py-2 px-2.5 text-xs font-semibold text-[#0B5D32] bg-[#E8F5EC] hover:bg-[#C9F0D5] border border-[#C9F0D5] hover:border-[#168447] rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                      title={`Regarder la mini vidéo explicative de ${app.name}`}
+                    >
+                      <PlayCircle className="w-3.5 h-3.5 text-[#168447] shrink-0" />
+                      <span className="truncate">Aperçu vidéo</span>
                     </button>
                   </div>
 
-                  {/* Row 2: Primary Order Button */}
+                  {/* Row 2: Catalogue PDF */}
+                  <button
+                    type="button"
+                    onClick={() => downloadApplicationPdf(app)}
+                    className="w-full py-2 px-3 text-xs font-semibold text-[#0B5D32] bg-white hover:bg-[#E8F5EC] border border-[#DCE9E0] hover:border-[#C9F0D5] rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    title="Télécharger la fiche catalogue officielle en PDF"
+                  >
+                    <FileDown className="w-3.5 h-3.5 text-[#168447]" />
+                    <span>Catalogue PDF</span>
+                  </button>
+
+                  {/* Row 3: Primary Order Button */}
                   <button
                     type="button"
                     onClick={() => onOrderApp(app)}
